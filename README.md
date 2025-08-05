@@ -19,40 +19,85 @@ Advanced coordination between specialized agents for complex tasks.
 
 ## 🚀 Quick Start
 
-### 1. Install Dependencies
+### Option A: Local Installation
+
+#### 1. Install Dependencies
 ```bash
 pip install pydantic-ai python-dotenv
 ```
 
-### 2. Get Gemini API Key
+#### 2. Get Gemini API Key
 - Go to [Google AI Studio](https://aistudio.google.com/apikey)
 - Sign in with your Google account
 - Click "Create API Key"
 - Copy your API key
 
-### 3. Create Environment File
+#### 3. Create Environment File
 Create a `.env` file in your project directory:
 ```
 GEMINI_API_KEY=your_actual_gemini_api_key_here
 ```
 
-### 4. Choose Your Interface
+#### 4. Choose Your Interface
 
-#### Simple Research Agent
+**Simple Research Agent**
 ```bash
 python main.py
 ```
 
-#### Multi-Agent System
+**Multi-Agent System**
 ```bash
 python multi_agent.py
+```
+
+### Option B: Docker Installation 🐳
+
+#### 1. Prerequisites
+- Docker and Docker Compose installed
+- Your Gemini API key
+
+#### 2. Create Environment File
+```bash
+echo "GEMINI_API_KEY=your_actual_gemini_api_key_here" > .env
+```
+
+#### 3. Run with Docker
+
+**Multi-Agent System (Default)**
+```bash
+# Build and run
+docker-compose up --build multi-agent
+
+# Run in background
+docker-compose up -d --build multi-agent
+```
+
+**Simple Research Agent**
+```bash
+# Run simple research agent
+docker-compose --profile simple up --build research-agent
+
+# Or access running container
+docker exec -it multi-agent-system python main.py
+```
+
+#### 4. Alternative Docker Commands
+```bash
+# Build custom image
+docker build -t multi-agent-ai .
+
+# Run multi-agent system
+docker run -it --env-file .env multi-agent-ai python multi_agent.py
+
+# Run simple research agent
+docker run -it --env-file .env multi-agent-ai python main.py
 ```
 
 ## 💡 How to Use
 
 ### 🔍 Simple Research Agent (main.py)
 
-1. **Start the agent** - Run `python main.py`
+1. **Start the agent** - Run `python main.py` or Docker equivalent
 2. **Enter research topics** when prompted
 3. **Get structured results** with:
    - Summary of findings
@@ -65,7 +110,7 @@ python multi_agent.py
 
 ### 🤖 Multi-Agent System (multi_agent.py)
 
-1. **Start the system** - Run `python multi_agent.py`
+1. **Start the system** - Run `python multi_agent.py` or Docker equivalent
 2. **Enter any request** - The coordinator will automatically determine which agents to use
 3. **Get specialized results** based on your request type:
    - Research topics get comprehensive analysis
@@ -104,11 +149,24 @@ python multi_agent.py
 - **Session Management**: Persistent context within sessions
 - **Error Handling**: Graceful error management and recovery
 
+### 🐳 Docker Features
+- **Containerized Deployment**: Run anywhere Docker is supported
+- **Multi-Service Support**: Both single and multi-agent modes
+- **Security**: Non-root user, proper permissions
+- **Health Monitoring**: Built-in health checks
+- **Development Ready**: Volume mounting for code changes
+
 ## 🔧 Requirements
 
+### Local Installation
 - Python 3.8 or higher
 - Internet connection for API calls
 - Valid Gemini API key
+
+### Docker Installation
+- Docker and Docker Compose
+- Valid Gemini API key
+- 300-400MB disk space for image
 
 ## 🎯 Example Usage
 
@@ -202,12 +260,16 @@ I hope this email finds you well. I wanted to provide you with a comprehensive u
 
 ```
 multi-agent-system/
-├── main.py           # Simple research agent (original functionality)
-├── models.py         # Pydantic models and data structures
-├── agents.py         # Agent definitions and coordination tools
-├── multi_agent.py    # Main orchestrator and interactive interface
-├── .env             # Environment variables (create this)
-└── README.md        # This file
+├── main.py              # Simple research agent (original functionality)
+├── models.py            # Pydantic models and data structures
+├── agents.py            # Agent definitions and coordination tools
+├── multi_agent.py       # Main orchestrator and interactive interface
+├── Dockerfile           # Docker container configuration
+├── docker-compose.yml   # Multi-service orchestration
+├── .dockerignore        # Docker build optimization
+├── requirements.txt     # Python dependencies
+├── .env                 # Environment variables (create this)
+└── README.md           # This file
 ```
 
 ## 🎯 Which Interface to Choose?
@@ -224,6 +286,34 @@ multi-agent-system/
 - You're working on complex projects requiring multiple skills
 - You want the full power of specialized AI agents
 
+### Use Docker when:
+- You want consistent environments across different systems
+- You're deploying to production
+- You want easy setup without managing Python dependencies
+- You need isolated, containerized execution
+
+## 🐳 Docker Commands Quick Reference
+
+```bash
+# Multi-Agent System
+docker-compose up --build multi-agent
+
+# Simple Research Agent  
+docker-compose --profile simple up --build research-agent
+
+# Access running container
+docker exec -it multi-agent-system python main.py
+
+# View logs
+docker-compose logs multi-agent
+
+# Stop services
+docker-compose down
+
+# Build custom image
+docker build -t multi-agent-ai .
+```
+
 ## ⚠️ Important Notes
 
 - Keep your API key secure and never share it
@@ -231,19 +321,43 @@ multi-agent-system/
 - Results are AI-generated and should be fact-checked for critical use cases
 - Code analysis suggestions should be reviewed by experienced developers
 - Creative content should be reviewed for accuracy and appropriateness
+- Docker containers run with non-root user for security
 
 ## 🆘 Troubleshooting
 
+### General Issues
 **API Key Error**: Make sure your `.env` file contains the correct API key  
 **Import Error**: Install required packages with `pip install pydantic-ai python-dotenv`  
 **Connection Error**: Check your internet connection and API key validity  
 **Agent Coordination Issues**: Restart the system if agents seem unresponsive  
 **File Not Found**: Make sure you're running the correct file (`main.py` vs `multi_agent.py`)
 
+### Docker Issues
+**Container Won't Start**: Check if API key is set in `.env` file  
+**Image Not Found**: Use correct image name from `docker ps` or build first  
+**Permission Denied**: Ensure `.env` file exists and is readable  
+**Interactive Mode Not Working**: Use `-it` flags with `docker run`  
+**Port Issues**: Make sure no other containers are using the same ports
+
+### Quick Fixes
+```bash
+# Check container status
+docker ps
+
+# View container logs
+docker logs multi-agent-system
+
+# Rebuild without cache
+docker-compose build --no-cache
+
+# Check environment variables
+docker exec multi-agent-system env | grep GEMINI
+```
+
 ## 🔄 Running Examples
 
-The multi-agent system includes built-in examples. When you start it with `python multi_agent.py`, you'll be prompted to run demonstrations of each agent type before starting your interactive session.
+The multi-agent system includes built-in examples. When you start it with `python multi_agent.py` or Docker equivalent, you'll be prompted to run demonstrations of each agent type before starting your interactive session.
 
 ---
 
-*Simple research assistance AND comprehensive multi-agent AI coordination - Choose the interface that fits your needs. Powered by Pydantic AI and Google Gemini*
+*Simple research assistance AND comprehensive multi-agent AI coordination - Choose the interface that fits your needs. Now with Docker support for easy deployment! Powered by Pydantic AI and Google Gemini*
