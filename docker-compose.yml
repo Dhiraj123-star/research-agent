@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # Multi-Agent System (default)
+  multi-agent:
+    build: .
+    container_name: multi-agent-system
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./data:/app/data  # For any data persistence (optional)
+    stdin_open: true
+    tty: true
+    command: python multi_agent.py
+    networks:
+      - ai-network
+
+  # Simple Research Agent
+  research-agent:
+    build: .
+    container_name: simple-research-agent
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./data:/app/data  # For any data persistence (optional)
+    stdin_open: true
+    tty: true
+    command: python main.py
+    networks:
+      - ai-network
+    profiles:
+      - simple  # Only starts with --profile simple
+
+networks:
+  ai-network:
+    driver: bridge
+
+volumes:
+  data:
+    driver: local
