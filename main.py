@@ -35,15 +35,9 @@ def get_gemini_model():
     if not api_key:
         raise ValueError("Please set GEMINI_API_KEY in your .env file")
     
-    # Option 1: Simple model name approach (uses environment variable automatically)
+    #Simple model name approach (uses environment variable automatically)
     return GeminiModel("gemini-2.0-flash-exp")
     
-    # Option 2: If you want to explicitly pass the API key
-    # from pydantic_ai.providers.google_gla import GoogleGLAProvider
-    # return GeminiModel(
-    #     "gemini-2.0-flash-exp", 
-    #     provider=GoogleGLAProvider(api_key=api_key)
-    # )
 
 # =============================================================================
 # CREATE RESEARCH AGENT
