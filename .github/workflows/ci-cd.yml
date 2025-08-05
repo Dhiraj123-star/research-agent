@@ -114,11 +114,13 @@ jobs:
         
     - name: Update Docker Hub description
       uses: peter-evans/dockerhub-description@v3
+      continue-on-error: true
       with:
         username: ${{ env.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_TOKEN }}
         repository: ${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}
         readme-filepath: ./README.md
+        short-description: "Multi-Agent AI System with Research, Code Analysis, and Creative Writing capabilities"
 
   # =============================================================================
   # SECURITY SCANNING JOB
